@@ -1,0 +1,12 @@
+name = "decentralised-governance"
+main = "worker.js"
+compatibility_date = "2026-10-18"
+compatibility_flags = ["nodejs_compat"]
+
+[[d1_databases]]
+binding = "MY_BINDING"
+database_name = "REPLACE_WITH_YOUR_DB_NAME"
+database_id   = "REPLACE_WITH_YOUR_DATABASE_ID"
+
+[observability]
+enabled = true

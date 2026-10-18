@@ -1,0 +1,14 @@
+Documentation and governance text in this repository — all files inside
+docs/  and  engine/docs/  — are licensed under the Creative Commons
+Attribution-ShareAlike 4.0 International License (CC BY-SA 4.0).
+
+Full license text: https://creativecommons.org/licenses/by-sa/4.0/legalcode
+
+Scope:
+  Code  (engine/, examples/, scripts/, .github/)  -> MIT (see LICENSE)
+  Docs  (docs/, engine/docs/)                     -> CC BY-SA 4.0 (this file)
+  Anything else                                   -> MIT by default
+
+You are free to share and adapt. If you remix, transform, or build upon
+the governance text, you must distribute your contributions under the
+same license and credit the original project.

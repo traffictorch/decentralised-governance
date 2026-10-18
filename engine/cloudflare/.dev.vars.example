@@ -1,0 +1,4 @@
+# Copy to .dev.vars for local dev only.
+# Production:  npx wrangler secret put JWT_SECRET
+# Must match the secret used by your auth worker to sign user JWTs.
+JWT_SECRET="paste-a-long-random-string-here"
