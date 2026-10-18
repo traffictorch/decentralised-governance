@@ -28,6 +28,12 @@ The JWT is issued by *your* auth system (the engine doesn't issue tokens). It mu
 
 ---
 
+## Tally denominator
+
+Pass, block, and abstain percentages are computed as fractions of **all votes cast**, including abstain. The same denominator applies to the 66% pass threshold, the 75% meta threshold, and the 25% block threshold. An abstain therefore dilutes YES and NO equally — it cannot be used as a stealth block.
+
+The quorum check also uses this total: `total_votes = yes + no + abstain` must meet or exceed `max(10, ceil(eligible_count * quorum_pct))`.
+
 ## Entity eligibility
 
 An **entity** is a registered user who can vote. Eligibility is checked when a user first calls `/me`, and cached in `rt_entities`.
@@ -296,6 +302,8 @@ File a 72h objection. **Bench members only.** One per proposal per bench member,
 Errors: 400 (not in vote phase / already objected), 403 (not on bench), 404, 429 (cooldown).
 
 ---
+
+**Side effect:** A successful objection extends the proposal's `vote_ends_at` by 72 hours. Voters get their full 5 days; the pause does not eat into their window.
 
 ### GET /api/rt/audit/head
 

@@ -51,13 +51,15 @@ This document is not fixed. It is the current state of an evolving agreement.
 
 **3.6 — Abstain is not No.** Abstain counts toward quorum but not toward the pass threshold.
 
-**3.7 — Comment periods.** Meta proposals require 30 days of comment before voting opens. Config 14 days. Advisory 7 days.
+**3.7 — Comment periods.** Meta proposals require 30 days of comment before voting opens. Config 14 days. Code 14 days. Advisory 7 days.
+
+**3.8 — Vote length.** Every vote runs 5 days from `vote_starts_at` to `vote_ends_at`, regardless of proposal kind. An Objector's Bench pause extends `vote_ends_at` by the pause duration (see 4.2).
 
 ## Article 4 — The Objector's Bench
 
 **4.1** Five entities are randomly selected by sortition to serve 30-day terms.
 
-**4.2** Any Bench member may file an objection during an open vote, pausing it 72 hours. Reason must be public.
+**4.2** Any Bench member may file an objection during an open vote, pausing it 72 hours. Reason must be public. The pause extends `vote_ends_at` by 72 hours — it does not consume voters' time.
 
 **4.3** A Bench member can file only one objection per proposal, with a 30-day cooldown.
 
