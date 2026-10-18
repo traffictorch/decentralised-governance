@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Governance Demo — Standalone</title>
+<style>
+:root { --bg: #0a0a0a; --card: #151515; --border: #2a2a2a; --text: #f0f0f0; --muted: #888; --accent: #6366f1; --green: #22c55e; --red: #ef4444; --yellow: #eab308; }
+* { box-sizing: border-box; }
+body { font-family: system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); max-width: 900px; margin: 0 auto; padding: 2rem 1rem 4rem; line-height: 1.6; }
+h1 { font-size: 2rem; margin: 0 0 0.5rem; }
+h2 { font-size: 1.25rem; margin: 2rem 0 1rem; }
+h3 { font-size: 1.1rem; margin: 0 0 0.5rem; }
+.notice { padding: 0.75rem 1rem; border-radius: 0.5rem; background: rgba(234, 179, 8, 0.1); border: 1px solid rgba(234, 179, 8, 0.3); color: var(--yellow); font-size: 0.9rem; margin-bottom: 2rem; }
+.notice a { color: var(--yellow); text-decoration: underline; }
+.card { background: var(--card); border: 1px solid var(--border); border-radius: 0.75rem; padding: 1.25rem; margin-bottom: 1rem; cursor: pointer; transition: border-color 0.15s; }
+.card:hover { border-color: var(--accent); }
+.badges { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 0.5rem; }
+.badge { font-size: 0.7rem; padding: 0.15rem 0.5rem; border-radius: 99px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.03em; }
+.badge.draft { background: #333; color: #aaa; }
+.badge.vote { background: rgba(234, 179, 8, 0.15); color: var(--yellow); }
+.badge.passed { background: rgba(34, 197, 94, 0.15); color: var(--green); }
+.badge.rejected { background: rgba(239, 68, 68, 0.15); color: var(--red); }
+.btn { padding: 0.5rem 1rem; border-radius: 0.5rem; border: 1px solid var(--border); background: transparent; color: var(--text); font-weight: 600; cursor: pointer; font-size: 0.9rem; }
+.btn:hover { border-color: var(--accent); }
+.btn-primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+.btn-yes { background: var(--green); color: #fff; border-color: var(--green); }
+.btn-no { background: var(--red); color: #fff; border-color: var(--red); }
+.tally-bar { height: 12px; border-radius: 99px; overflow: hidden; background: var(--border); display: flex; margin: 0.5rem 0; }
+.tally-yes { background: var(--green); }
+.tally-no { background: var(--red); }
+.tally-abstain { background: var(--muted); }
+.comment { padding: 0.75rem 0; border-top: 1px solid var(--border); }
+.comment:first-child { border-top: 0; }
+.comment-author { font-weight: 600; font-size: 0.9rem; }
+.comment-body { font-size: 0.9rem; margin-top: 0.25rem; color: #ccc; }
+input, textarea { width: 100%; padding: 0.5rem; background: var(--bg); border: 1px solid var(--border); border-radius: 0.5rem; color: var(--text); font-family: inherit; font-size: 0.9rem; }
+.back { font-size: 0.9rem; color: var(--muted); cursor: pointer; margin-bottom: 1rem; display: inline-block; }
+.back:hover { color: var(--text); }
+code { background: var(--border); padding: 0.1rem 0.4rem; border-radius: 0.25rem; font-size: 0.85em; }
+</style>
+</head>
+<body>
+<h1>Governance Demo</h1>
+<p style="color: var(--muted); margin-bottom: 2rem;">A self-contained demo of the [PROJECT_NAME] Round Table. No backend required — the state lives in your browser.</p>
+<div class="notice">
+  <strong>⚠️ Mock data.</strong> Fake users and votes so you can click through the flow without a backend. To connect a real API, see <code>docs/api-contract.md</code>.
+</div>
+<div id="app"></div>
+<div style="margin-top: 3rem; padding-top: 2rem; border-top: 1px solid var(--border); color: var(--muted); font-size: 0.9rem;">
+  <p>Part of the <a href="https://github.com/traffictorch/decentralised-governance" style="color: var(--accent);">decentralised-governance</a> repo.</p>
+  <p style="margin-top: 0.5rem;">→ <a href="simulator.html" style="color: var(--accent);">Try the 30-second simulator</a></p>
+</div>
+<script>
+const MOCK_PROPOSALS = [
+  { id: 'rt0001', title: 'Ratify the [PROJECT_NAME] Constitution', body_md: 'The complete ruleset. Equal authority. No admin.', kind: 'meta', category: 'meta', phase: 'vote', author_entity_id: 'system', tally: { yes: 18, no: 3, abstain: 2 }, eligible_count: 28, quorum_pct: 0.20, threshold_pct: 0.75, block_pct: 0.25, comments: [{ id: 'c1', author: 'alice', body_md: 'Strong draft. Ship it.' }, { id: 'c2', author: 'bob', body_md: 'Consider raising block threshold to 30%?' }] },
+  { id: 'rt0002', title: 'Add dark mode as default', body_md: 'Site defaults to dark. Preferences respected.', kind: 'config', category: 'feature', phase: 'draft', author_entity_id: 'u42', tally: { yes: 0, no: 0, abstain: 0 }, eligible_count: null, quorum_pct: 0.20, threshold_pct: 0.66, block_pct: 0.25, comments: [] },
+  { id: 'rt0003', title: 'Add WebAuthn passkey login', body_md: 'Second login method. PR #142 implements the flow.', kind: 'code', category: 'security', phase: 'passed', author_entity_id: 'u8', tally: { yes: 15, no: 4, abstain: 1 }, eligible_count: 28, quorum_pct: 0.20, threshold_pct: 0.66, block_pct: 0.25, comments: [] }
+];
+const state = JSON.parse(localStorage.getItem('demo_state') || '{}');
+const proposals = state.proposals || MOCK_PROPOSALS.map(p => ({ ...p }));
+let current = null;
+function save() { localStorage.setItem('demo_state', JSON.stringify({ proposals })); }
+function esc(s) { return String(s || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function pct(n, total) { return total ? Math.round(n / total * 100) : 0; }
+function phaseClass(p) { return { draft: 'draft', vote: 'vote', passed: 'passed', rejected: 'rejected' }[p] || 'draft'; }
+function renderList() {
+  document.getElementById('app').innerHTML = `<h2>Proposals (${proposals.length})</h2>${proposals.map(p => `
+    <div class="card" onclick="openProposal('${p.id}')">
+      <div class="badges"><span class="badge ${phaseClass(p.phase)}">${esc(p.phase)}</span><span style="font-size: 0.75rem; color: var(--muted);">${esc(p.kind)} · ${esc(p.category)} · by ${esc(p.author_entity_id)}</span></div>
+      <h3>${esc(p.title)}</h3>
+      <p style="font-size: 0.9rem; color: #ccc; margin: 0.25rem 0 0.75rem;">${esc(p.body_md.slice(0, 140))}${p.body_md.length > 140 ? '…' : ''}</p>
+      ${(p.phase !== 'draft') && (p.tally.yes + p.tally.no + p.tally.abstain) > 0 ? `
+        <div class="tally-bar"><div class="tally-yes" style="width:${pct(p.tally.yes, p.tally.yes+p.tally.no+p.tally.abstain)}%"></div><div class="tally-no" style="width:${pct(p.tally.no, p.tally.yes+p.tally.no+p.tally.abstain)}%"></div><div class="tally-abstain" style="width:${pct(p.tally.abstain, p.tally.yes+p.tally.no+p.tally.abstain)}%"></div></div>
+        <p style="font-size: 0.8rem; color: var(--muted);">✓ ${p.tally.yes} · ✗ ${p.tally.no} · ◯ ${p.tally.abstain}${p.eligible_count ? ' · ' + (p.tally.yes+p.tally.no+p.tally.abstain) + ' of ' + p.eligible_count + ' eligible' : ''}</p>
+      ` : ''}
+    </div>`).join('')}`;
+}
+function openProposal(id) { current = proposals.find(p => p.id === id); if (current) renderDetail(); }
+function renderDetail() {
+  if (!current) return renderList();
+  const total = current.tally.yes + current.tally.no + current.tally.abstain;
+  document.getElementById('app').innerHTML = `
+    <span class="back" onclick="goBack()">← Back to proposals</span>
+    <div class="card" style="cursor: default;">
+      <div class="badges"><span class="badge ${phaseClass(current.phase)}">${esc(current.phase)}</span><span style="font-size: 0.75rem; color: var(--muted);">${esc(current.kind)} · ${esc(current.category)} · by ${esc(current.author_entity_id)}</span></div>
+      <h2 style="margin-top: 0.5rem;">${esc(current.title)}</h2>
+      <p style="color: #ccc; white-space: pre-wrap; margin: 1rem 0;">${esc(current.body_md)}</p>
+    </div>
+    ${current.phase !== 'draft' ? `
+      <div class="card" style="cursor: default;">
+        <h3>Tally</h3>
+        <div class="tally-bar" style="height: 16px;"><div class="tally-yes" style="width:${pct(current.tally.yes, total)}%"></div><div class="tally-no" style="width:${pct(current.tally.no, total)}%"></div><div class="tally-abstain" style="width:${pct(current.tally.abstain, total)}%"></div></div>
+        <p style="font-size: 0.9rem; color: #ccc;">✓ ${current.tally.yes} · ✗ ${current.tally.no} · ◯ ${current.tally.abstain} · ${total} of ${current.eligible_count || '?'} eligible · quorum ${Math.round(current.quorum_pct*100)}% · pass ${Math.round(current.threshold_pct*100)}%</p>
+        <p style="font-size: 0.8rem; color: var(--red); margin-top: 0.5rem;">⚠ Block wins: 25%+ NO fails even at 66%+ YES</p>
+        ${current.phase === 'vote' ? `<div style="display: flex; gap: 0.5rem; margin-top: 1rem; flex-wrap: wrap;"><button class="btn btn-yes" onclick="castVote('yes')" style="flex: 1;">Vote Yes</button><button class="btn btn-no" onclick="castVote('no')" style="flex: 1;">Vote No</button><button class="btn" onclick="castVote('abstain')" style="flex: 1;">Abstain</button></div>` : `<p style="font-size: 0.9rem; color: var(--muted); margin-top: 1rem;">Voting is closed.</p>`}
+      </div>
+    ` : `<div class="card" style="cursor: default;"><p style="color: var(--muted); text-align: center; padding: 1rem;">In draft — comment period ongoing.</p></div>`}
+    <div class="card" style="cursor: default;">
+      <h3>Discussion (${current.comments.length})</h3>
+      ${current.comments.length === 0 ? '<p style="color: var(--muted); text-align: center; padding: 1rem 0;">No comments yet.</p>' : current.comments.map(c => `<div class="comment"><div class="comment-author">${esc(c.author)}</div><div class="comment-body">${esc(c.body_md)}</div></div>`).join('')}
+      <div style="margin-top: 1rem; display: flex; gap: 0.5rem;"><input id="new-comment" placeholder="Add your comment…" onkeydown="if(event.key==='Enter') postComment()"><button class="btn btn-primary" onclick="postComment()">Post</button></div>
+    </div>`;
+}
+function castVote(choice) { if (!current || current.phase !== 'vote') return; current.tally[choice] = (current.tally[choice] || 0) + 1; save(); renderDetail(); toast('Vote recorded: ' + choice); }
+function postComment() { const input = document.getElementById('new-comment'); const text = (input?.value || '').trim(); if (!text) return; current.comments.push({ id: 'c_' + Date.now(), author: 'you', body_md: text }); save(); renderDetail(); toast('Comment posted'); }
+function goBack() { current = null; renderList(); }
+function toast(msg) { const el = document.createElement('div'); el.textContent = msg; el.style.cssText = 'position:fixed;bottom:2rem;right:2rem;background:var(--accent);color:#fff;padding:0.75rem 1.25rem;border-radius:0.5rem;font-weight:600;font-size:0.9rem;z-index:9999;'; document.body.appendChild(el); setTimeout(() => el.remove(), 2200); }
+renderList();
+</script>
+</body>
+</html>

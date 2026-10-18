@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Governance Demo — Plain CSS</title>
+<style>
+:root { --bg-body: #05060a; --bg-glass: rgba(12, 15, 25, 0.65); --text-primary: #eef2f8; --text-secondary: #c7d2fe; --text-muted: #a5b4fc; --border: rgba(255, 255, 255, 0.06); }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: Inter, system-ui, -apple-system, sans-serif; background: var(--bg-body); color: var(--text-primary); min-height: 100vh; padding: 2rem 1rem; line-height: 1.6; }
+.container { max-width: 780px; margin: 0 auto; }
+h1 { font-size: clamp(1.8rem, 3vw, 2.4rem); font-weight: 700; margin-bottom: 0.5rem; background: linear-gradient(135deg, #4f46e5, #a78bfa, #f472b6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.lead { color: var(--text-secondary); margin-bottom: 2rem; }
+.notice { background: rgba(251, 191, 36, 0.08); border: 1px solid rgba(251, 191, 36, 0.25); border-radius: 0.8rem; padding: 0.9rem 1.2rem; color: #fbbf24; font-size: 0.9rem; margin-bottom: 2rem; }
+.glass-card { background: var(--bg-glass); backdrop-filter: blur(16px); border: 1px solid var(--border); border-radius: 1.5rem; padding: 1.5rem; margin-bottom: 1rem; transition: border-color 0.2s; }
+.glass-card:hover { border-color: rgba(79, 70, 229, 0.4); }
+.badge { display: inline-block; font-size: 0.65rem; font-weight: 700; padding: 0.15rem 0.7rem; border-radius: 40px; text-transform: uppercase; letter-spacing: 0.05em; }
+.badge-draft { background: rgba(255, 255, 255, 0.06); color: var(--text-muted); }
+.badge-vote { background: rgba(251, 191, 36, 0.12); color: #fbbf24; }
+.badge-passed { background: rgba(52, 211, 153, 0.12); color: #34d399; }
+.badge-rejected { background: rgba(248, 113, 113, 0.12); color: #f87171; }
+.meta { color: var(--text-muted); font-size: 0.75rem; margin-left: 0.5rem; }
+.title { font-weight: 700; font-size: 1.1rem; margin: 0.5rem 0; }
+.body { color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 0.75rem; }
+.tally-bar { height: 8px; border-radius: 99px; overflow: hidden; background: rgba(255, 255, 255, 0.06); display: flex; margin: 0.5rem 0; }
+.tally-yes { background: #34d399; }
+.tally-no { background: #f87171; }
+.tally-abstain { background: #a5b4fc; }
+.tally-info { color: var(--text-muted); font-size: 0.75rem; }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>Governance Demo</h1>
+  <p class="lead">Styled with plain CSS. The standalone aesthetic — no Tailwind, no build step.</p>
+  <div class="notice"><strong>⚠️ Mock data.</strong> Real backend integration: <code>docs/api-contract.md</code>.</div>
+  <div id="proposals"></div>
+</div>
+<script>
+const P = [
+  { phase: 'vote', kind: 'meta', category: 'meta', author: 'system', title: 'Ratify the Constitution', body_md: 'The complete ruleset. Equal authority. No admin.', tally: { yes: 18, no: 3, abstain: 2 }, eligible_count: 28 },
+  { phase: 'draft', kind: 'config', category: 'feature', author: 'u42', title: 'Add dark mode as default', body_md: 'Site defaults to dark. Preferences respected.', tally: { yes: 0, no: 0, abstain: 0 }, eligible_count: null },
+  { phase: 'passed', kind: 'code', category: 'security', author: 'u8', title: 'Add WebAuthn passkey login', body_md: 'Second login method. Improves security.', tally: { yes: 15, no: 4, abstain: 1 }, eligible_count: 28 }
+];
+document.getElementById('proposals').innerHTML = P.map(p => {
+  const total = p.tally.yes + p.tally.no + p.tally.abstain;
+  const showTally = (p.phase !== 'draft') && total > 0;
+  return `<article class="glass-card">
+    <span class="badge badge-${p.phase}">${p.phase}</span><span class="meta">${p.kind} · ${p.category} · by ${p.author}</span>
+    <h3 class="title">${p.title}</h3>
+    <p class="body">${p.body_md}</p>
+    ${showTally ? `<div class="tally-bar"><div class="tally-yes" style="width:${(p.tally.yes/total)*100}%"></div><div class="tally-no" style="width:${(p.tally.no/total)*100}%"></div><div class="tally-abstain" style="width:${(p.tally.abstain/total)*100}%"></div></div><p class="tally-info">✓ ${p.tally.yes} · ✗ ${p.tally.no} · ◯ ${p.tally.abstain}${p.eligible_count ? ' · ' + total + ' of ' + p.eligible_count + ' eligible' : ''}</p>` : ''}
+  </article>`;
+}).join('');
+</script>
+</body>
+</html>

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Governance Demo — Tailwind</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>tailwind.config = { darkMode: 'class' };</script>
+</head>
+<body class="min-h-screen bg-gray-950 text-gray-100 font-sans">
+<div class="max-w-3xl mx-auto px-4 py-8">
+  <h1 class="text-3xl font-black mb-2 bg-gradient-to-r from-orange-400 to-pink-500 bg-clip-text text-transparent">Governance Demo</h1>
+  <p class="text-gray-400 mb-6">Styled to match Traffic Torch. Same governance logic, different aesthetic.</p>
+  <div class="mb-6 bg-yellow-500/10 border border-yellow-500/30 rounded-lg p-3 text-sm text-yellow-400"><strong>⚠️ Mock data.</strong> Connect a real backend via <code class="bg-black/30 px-1 rounded">API_URL</code>.</div>
+  <div id="proposals" class="space-y-3"></div>
+</div>
+<script>
+const P = [
+  { phase: 'vote', kind: 'meta', category: 'meta', author: 'system', title: 'Ratify the Constitution', body_md: 'The complete ruleset. Equal authority. No admin.', tally: { yes: 18, no: 3, abstain: 2 }, eligible_count: 28 },
+  { phase: 'draft', kind: 'config', category: 'feature', author: 'u42', title: 'Add dark mode as default', body_md: 'Site defaults to dark. Preferences respected.', tally: { yes: 0, no: 0, abstain: 0 }, eligible_count: null },
+  { phase: 'passed', kind: 'code', category: 'security', author: 'u8', title: 'Add WebAuthn passkey login', body_md: 'Second login method. Improves security.', tally: { yes: 15, no: 4, abstain: 1 }, eligible_count: 28 }
+];
+const C = { draft: 'bg-gray-700 text-gray-300', vote: 'bg-yellow-900/40 text-yellow-300', passed: 'bg-green-900/40 text-green-300', rejected: 'bg-red-900/40 text-red-300' };
+document.getElementById('proposals').innerHTML = P.map(p => {
+  const total = p.tally.yes + p.tally.no + p.tally.abstain;
+  return `<article class="bg-white/5 backdrop-blur border border-white/10 rounded-2xl p-5 hover:border-orange-400/60 transition cursor-pointer">
+    <div class="flex items-center gap-2 mb-2 flex-wrap"><span class="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${C[p.phase]}">${p.phase}</span><span class="text-xs text-gray-500">${p.kind} · ${p.category} · by ${p.author}</span></div>
+    <h3 class="text-lg font-bold mb-1">${p.title}</h3>
+    <p class="text-sm text-gray-400 mb-3">${p.body_md}</p>
+    ${(p.phase !== 'draft' && total > 0) ? `<div class="flex h-2 rounded-full overflow-hidden bg-gray-800 mb-2"><div class="bg-emerald-500" style="width:${(p.tally.yes/total)*100}%"></div><div class="bg-red-500" style="width:${(p.tally.no/total)*100}%"></div><div class="bg-gray-400" style="width:${(p.tally.abstain/total)*100}%"></div></div><p class="text-xs text-gray-400">✓ ${p.tally.yes} · ✗ ${p.tally.no} · ◯ ${p.tally.abstain}${p.eligible_count ? ' · ' + total + ' of ' + p.eligible_count + ' eligible' : ''}</p>` : ''}
+  </article>`;
+}).join('');
+</script>
+</body>
+</html>

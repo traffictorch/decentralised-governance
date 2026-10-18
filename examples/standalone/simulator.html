@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Governance Simulator — Standalone</title>
+<link rel="stylesheet" href="../../engine/simulator/governance-simulator.css">
+<style>
+body { font-family: system-ui, -apple-system, sans-serif; background: #0a0a0a; color: #f0f0f0; max-width: 900px; margin: 0 auto; padding: 2rem 1rem 4rem; line-height: 1.6; }
+h1 { font-size: 2rem; margin: 0 0 0.5rem; }
+p { color: #888; }
+.back { color: #888; text-decoration: none; font-size: 0.9rem; }
+.back:hover { color: #f0f0f0; }
+</style>
+</head>
+<body>
+<a class="back" href="index.html">← Back to governance demo</a>
+<h1 style="margin-top: 1rem;">Governance Simulator</h1>
+<p>Five scenarios, no backend. Click Play to watch a proposal move through Propose → Discuss → Vote → Execute.</p>
+<div id="sim" style="margin-top: 2rem;"></div>
+<script src="../../engine/simulator/governance-scenarios.js"></script>
+<script src="../../engine/simulator/governance-simulator.js"></script>
+<script>
+GovernanceSimulator.init(document.getElementById('sim'), { brand: 'Governance Simulator Demo', brandColor: '#6366f1', autoplay: true });
+</script>
+</body>
+</html>
