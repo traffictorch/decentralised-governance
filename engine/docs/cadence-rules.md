@@ -49,3 +49,18 @@ Every non-meta resolution expires after 12 months unless renewed by re-vote. Pre
 
 - **1 active proposal per entity** (drafts + votes count as active)
 - **14-day cooldown** after a rejection before submitting again
+
+## Bench objection extends deadline
+
+When an Objector's Bench member files an objection during a vote, the vote is paused. The deadline is **extended by 72 hours** — the pause does not eat into voters' time. One objection per bench member per proposal. 30-day cooldown between objections from the same member.
+
+## Comment periods by kind
+
+- Meta: 30 days
+- Config: 14 days
+- Code: 14 days
+- Advisory: 7 days
+
+## Vote length by kind
+
+- All kinds: 5 days vote

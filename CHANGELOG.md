@@ -2,6 +2,18 @@
 
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) format. Semantic versioning.
 
+## [1.1.0] — 2026-10-18
+
+### Changed
+
+- Simulator v2 — Mission Control rewrite (phase rail, chamber, tally, audit ticker, scrubber, sandbox)
+- Extracted pure rules engine to governance-rules.js (browser + node + worker)
+- Added 29-assertion test suite (governance-rules.test.mjs)
+- 6 scenarios (was 5) — added no-quorum and bench-reconsider
+- Scenario timelines are event data; engine computes every outcome
+- Sandbox mode with URL state (s=sandbox, eligible, turnout, yes, no, kind)
+- Live config fetch with Live / Default badge
+
 ## [1.0.0] — 2026-10-18
 
 ### Added
