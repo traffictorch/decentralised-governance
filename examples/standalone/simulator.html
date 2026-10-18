@@ -16,12 +16,13 @@ p { color: #888; }
 <body>
 <a class="back" href="index.html">← Back to governance demo</a>
 <h1 style="margin-top: 1rem;">Governance Simulator</h1>
-<p>Five scenarios, no backend. Click Play to watch a proposal move through Propose → Discuss → Vote → Execute.</p>
+<p>Six scenarios, no backend. Click Play to watch a proposal move through Propose → Discuss → Vote → Execute — or open the sandbox tab to try your own numbers.</p>
 <div id="sim" style="margin-top: 2rem;"></div>
+<script src="../../engine/simulator/governance-rules.js"></script>
 <script src="../../engine/simulator/governance-scenarios.js"></script>
 <script src="../../engine/simulator/governance-simulator.js"></script>
 <script>
-GovernanceSimulator.init(document.getElementById('sim'), { brand: 'Governance Simulator Demo', brandColor: '#6366f1', autoplay: true });
+GovernanceSimulator.init(document.getElementById('sim'), { mode: 'full', brand: 'Governance Simulator Demo', brandColor: '#6366f1', autoplay: true });
 </script>
 </body>
 </html>
