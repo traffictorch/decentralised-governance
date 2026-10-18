@@ -21,7 +21,7 @@ Built and battle-tested in production at traffictorch.net/community/round-table/
 
 ## Install in 2 minutes
 
-    git clone https://github.com/[YOUR_USERNAME]/decentralised-governance
+    git clone https://github.com/traffictorch/decentralised-governance
     cd decentralised-governance/engine/cloudflare
     cp wrangler.toml.example wrangler.toml
     # edit wrangler.toml: set database_name + database_id
